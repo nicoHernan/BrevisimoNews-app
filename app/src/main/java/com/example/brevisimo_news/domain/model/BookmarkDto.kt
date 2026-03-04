@@ -1,16 +1,17 @@
 package com.example.brevisimo_news.domain.model
 
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BookmarksDto(
-    @SerialName("bookmarks_id") val bookmarksId: String? = null,
-    @SerialName("user_id") val userId: String,
-    @SerialName("title") val title: String,
-    @SerialName("description") val description:String? = null,
-    @SerialName("url") val url: String,
-    @SerialName("image_url") val imageUrl: String? = null,
-    @SerialName("source_name") val sourceName: String? = null,
-    @SerialName("created_at") val createdAt: String? = null
+data class BookmarkDto(
+    @SerializedName("bookmarks_id") val bookmarkId: String? = null,
+    @SerializedName("user_id") val userId: String,
+    @SerializedName("title") val title: String,
+    @SerializedName("description") val description: String?,
+    @SerializedName("url") val url: String,
+    @SerializedName("image_url") val imageUrl: String?,
+    @SerializedName("source_name") val sourceName: String?,
+    @SerializedName("created_at") val createdAt: String? = null
 )

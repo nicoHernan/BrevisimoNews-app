@@ -36,17 +36,14 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -57,10 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.brevisimo_news.HOME_SCREEN
-import com.example.brevisimo_news.LOGIN_SCREEN
 import com.example.brevisimo_news.NewsAppState
-import com.example.brevisimo_news.PROFILE_SCREEN
 import com.example.brevisimo_news.R
 import com.example.brevisimo_news.common.AIDialog
 import com.example.brevisimo_news.common.BottomNavigationBarComposable
@@ -86,6 +80,7 @@ fun HomeScreen(
     val context = LocalContext.current
     val homeUiState by homeViewModel.homeUiState.collectAsStateWithLifecycle()
     val filteredArticles by homeViewModel.filteredArticles.collectAsStateWithLifecycle()
+
 
     when(windowSizeClass.widthSizeClass){
         WindowWidthSizeClass.Compact ->{
@@ -118,7 +113,8 @@ fun HomeScreen(
                     }
                 },
                 snackbarHostState = newsAppState.snackbarHostState,
-                selectedDestination = newsAppState.getCurrentDestination()
+                selectedDestination = newsAppState.getCurrentDestination(),
+                onSaveBookmark = homeViewModel::onSaveBookmark
             )
         }
 
@@ -145,7 +141,8 @@ fun HomeScreen(
                         newsAppState.navigateToDestination(NavigationDestination.PROFILE)
                     }
                 },
-                selectedDestination = newsAppState.getCurrentDestination()
+                selectedDestination = newsAppState.getCurrentDestination(),
+                onSaveBookmark = homeViewModel::onSaveBookmark
             )
         }
     }
@@ -162,7 +159,8 @@ fun HomeContent (
     onSearch: (String) -> Unit,
     onCategorySelected: (String) -> Unit,
     onArticleDto: (articleDto: ArticleDto) -> Unit,
-    onGetEntity: (articleContent: String) -> Unit
+    onGetEntity: (articleContent: String) -> Unit,
+    onSaveBookmark: (ArticleDto) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -197,7 +195,6 @@ fun HomeContent (
 
         Spacer(modifier = Modifier.height(50.dp))
 
-
         if (articleDto.isEmpty()) {
             Box(
                 modifier = Modifier
@@ -228,7 +225,8 @@ fun HomeContent (
                             articleDto = articleDto,
                             onClick = { onArticleDto(articleDto) },
                             onGetEntity = onGetEntity,
-                            previewImage = R.drawable.imagen_para_renderizar
+                            previewImage = R.drawable.imagen_para_renderizar,
+                            onSaveClick = {onSaveBookmark(articleDto)}
                         )
                     }
                 }
@@ -246,7 +244,8 @@ fun HomeContent (
                             articleDto = articleDto,
                             previewImage = R.drawable.imagen_para_renderizar,
                             onClick = {onArticleDto(articleDto)},
-                            onGetEntity = onGetEntity
+                            onGetEntity = onGetEntity,
+                            onSaveClick = {onSaveBookmark(articleDto)}
                         )
                     }
                 }
@@ -273,7 +272,8 @@ fun HomePortraitLayout (
     onProfileIcon: () -> Unit,
     onBookmarksIcon: () -> Unit,
     snackbarHostState: SnackbarHostState,
-    selectedDestination: NavigationDestination
+    selectedDestination: NavigationDestination,
+    onSaveBookmark: (ArticleDto) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -321,7 +321,8 @@ fun HomePortraitLayout (
                         articleDto = articleDto,
                         onCategorySelected = onCategorySelected,
                         onArticleDto = onArticleDto,
-                        onGetEntity = onGetEntity
+                        onGetEntity = onGetEntity,
+                        onSaveBookmark = onSaveBookmark
                     )
                 }
 
@@ -372,7 +373,8 @@ fun HomeLandscapeLayout(
     snackbarHostState: SnackbarHostState,
     onHomeClick: () -> Unit,
     onProfileClick: () -> Unit,
-    selectedDestination: NavigationDestination
+    selectedDestination: NavigationDestination,
+    onSaveBookmark: (ArticleDto) -> Unit
 ) {
     Row(modifier = modifier.fillMaxSize()) {
         NavigationRailComposable(
@@ -401,7 +403,8 @@ fun HomeLandscapeLayout(
                     articleDto = articleDto,
                     onCategorySelected = onCategorySelected,
                     onArticleDto = onArticleDto,
-                    onGetEntity = onGetEntity
+                    onGetEntity = onGetEntity,
+                    onSaveBookmark = onSaveBookmark
                 )
             }
 
@@ -455,7 +458,8 @@ fun PortraitPreview() {
             onProfileIcon = {},
             onBookmarksIcon = {},
             snackbarHostState = snackbarHostState,
-            selectedDestination = NavigationDestination.HOME
+            selectedDestination = NavigationDestination.HOME,
+            onSaveBookmark = {}
         )
     }
 }

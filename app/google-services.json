@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "650439464002-r73qcfn4mb6ru9d04g8031uf9168jkqf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.brevisimo_news",
+            "certificate_hash": "646292fe2636cb61320c4b505491e1dda4a35d5b"
+          }
+        },
+        {
           "client_id": "650439464002-7skf4s4snuh10piuh1q0946bdh0nuk80.apps.googleusercontent.com",
           "client_type": 3
         }

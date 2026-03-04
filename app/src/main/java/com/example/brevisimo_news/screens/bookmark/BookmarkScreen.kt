@@ -1,4 +1,4 @@
-package com.example.brevisimo_news.screens.bookmarks
+package com.example.brevisimo_news.screens.bookmark
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
@@ -45,44 +45,40 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.brevisimo_news.BOOKMARKS_SCREEN
+import com.example.brevisimo_news.BOOKMARK_SCREEN
 import com.example.brevisimo_news.HOME_SCREEN
-import com.example.brevisimo_news.LOGIN_SCREEN
 import com.example.brevisimo_news.NewsAppState
-import com.example.brevisimo_news.PROFILE_SCREEN
-import com.example.brevisimo_news.common.BookmarksCardComposable
-import com.example.brevisimo_news.domain.model.ArticleDto
-import com.example.brevisimo_news.domain.model.BookmarksDto
-import com.example.brevisimo_news.screens.home.HomeSideEffect
+import com.example.brevisimo_news.common.BookmarkCardComposable
+import com.example.brevisimo_news.domain.model.BookmarkDto
 import kotlin.Unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookmarksScreen(
+fun BookmarkScreen(
     modifier: Modifier = Modifier,
-    bookmarksViewModel: BookmarksViewModel = hiltViewModel(),
+    bookmarkViewModel: BookmarkViewModel = hiltViewModel(),
     newsAppState: NewsAppState
 ) {
-    val bookmarksUiState by bookmarksViewModel.bookmarksUiState.collectAsStateWithLifecycle()
-    BookmarksPortraitLayout(
+    val bookmarkUiState by bookmarkViewModel.bookmarkUiState.collectAsStateWithLifecycle()
+    BookmarkPortraitLayout(
         modifier = modifier,
-        bookmarksDto = bookmarksUiState.bookmarksDto,
+        bookmarkDto = bookmarkUiState.bookmarkDto,
         navigateBack = {
             newsAppState.navigateBack()
         },
-        bookmarksUiState = bookmarksUiState,
+        bookmarkUiState = bookmarkUiState,
         onNavigateToHome = {
-            newsAppState.navigateAndPopUp(HOME_SCREEN, BOOKMARKS_SCREEN)
+            newsAppState.navigateAndPopUp(HOME_SCREEN, BOOKMARK_SCREEN)
         },
-        onDelete = bookmarksViewModel::deleteBookmark
+        onDelete = bookmarkViewModel::deleteBookmark
     )
 }
 
 @Composable
-fun BookmarksContent(
+fun BookmarkContent(
     modifier: Modifier = Modifier,
-    bookmarksDto: List<BookmarksDto>,
-    bookmarksUiState: BookmarksUiState,
+    bookmarkDto: List<BookmarkDto>,
+    bookmarkUiState: BookmarkUiState,
     onNavigateToHome: () -> Unit,
     onDelete: (bookmarksId: String) -> Unit
 ) {
@@ -92,12 +88,12 @@ fun BookmarksContent(
         Spacer(modifier = Modifier.height(20.dp))
 
         when {
-            bookmarksUiState.isLoading -> {
+            bookmarkUiState.isLoading -> {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
-            bookmarksDto.isEmpty() -> {
+            bookmarkDto.isEmpty() -> {
                 EmptyBookmarksPlaceholder(
                     onNavigateToHome = onNavigateToHome
                 )
@@ -108,9 +104,9 @@ fun BookmarksContent(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(items = bookmarksDto, key = { it.bookmarksId ?: "" }) { bookmarksDto ->
+                    items(items = bookmarkDto, key = { it.bookmarkId ?: "" }) { bookmarkDto ->
                         BookmarkItemWithDismiss(
-                            bookmarksDto = bookmarksDto,
+                            bookmarkDto = bookmarkDto,
                             onDelete = onDelete,
                             onClick = { /* Abrir URL */ }
                         )
@@ -123,11 +119,11 @@ fun BookmarksContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookmarksPortraitLayout(
+fun BookmarkPortraitLayout(
     modifier: Modifier = Modifier,
-    bookmarksDto: List<BookmarksDto>,
+    bookmarkDto: List<BookmarkDto>,
     navigateBack: () -> Unit,
-    bookmarksUiState: BookmarksUiState,
+    bookmarkUiState: BookmarkUiState,
     onNavigateToHome: () -> Unit,
     onDelete: (bookmarksId: String) -> Unit
 ) {
@@ -143,10 +139,10 @@ fun BookmarksPortraitLayout(
             )
         },
     content = { paddingValues ->
-            BookmarksContent(
+            BookmarkContent(
                 modifier = Modifier.padding(paddingValues),
-                bookmarksDto = bookmarksDto,
-                bookmarksUiState = bookmarksUiState,
+                bookmarkDto = bookmarkDto,
+                bookmarkUiState = bookmarkUiState,
                 onNavigateToHome = onNavigateToHome,
                 onDelete = onDelete
             )
@@ -157,14 +153,14 @@ fun BookmarksPortraitLayout(
 @Preview(
     showBackground = true,
     uiMode = UI_MODE_NIGHT_YES,
-    name = "BookmarksDarkPreview"
+    name = "BookmarkDarkPreview"
 )
 @Preview(showBackground = true)
 @Composable
-fun BookmarksPreview(){
-    val bookmarksDto = List(10){
-        BookmarksDto(
-            bookmarksId = "1",
+fun BookmarkPreview(){
+    val bookmarkDto = List(10){
+        BookmarkDto(
+            bookmarkId = "1",
             userId = "5",
             title = "These are the agencies Trump is purging during the shutdown - Axios",
             description = "Thousands are being let go from agencies overseeing health care, the environment and education.",
@@ -174,12 +170,12 @@ fun BookmarksPreview(){
             createdAt = "2025-10-11T15:44:45Z"
         )
     }
-    val bookmarksUiState = BookmarksUiState(bookmarksDto = bookmarksDto)
-    BookmarksPortraitLayout(
+    val bookmarkUiState = BookmarkUiState(bookmarkDto = bookmarkDto)
+    BookmarkPortraitLayout(
         modifier = Modifier,
-        bookmarksDto = bookmarksDto,
+        bookmarkDto = bookmarkDto,
         navigateBack = {},
-        bookmarksUiState = bookmarksUiState,
+        bookmarkUiState = bookmarkUiState,
         onNavigateToHome = {},
         onDelete = {}
     )
@@ -246,14 +242,14 @@ fun EmptyBookmarksPlaceholder(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookmarkItemWithDismiss(
-    bookmarksDto: BookmarksDto,
-    onDelete: (bookmarksId: String) -> Unit,
+    bookmarkDto: BookmarkDto,
+    onDelete: (bookmarkId: String) -> Unit,
     onClick: () -> Unit
 ) {
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
             if (it == SwipeToDismissBoxValue.EndToStart) {
-                onDelete(bookmarksDto.bookmarksId ?: "")
+                onDelete(bookmarkDto.bookmarkId ?: "")
                 true
             } else false
         }
@@ -283,8 +279,8 @@ fun BookmarkItemWithDismiss(
         },
         enableDismissFromStartToEnd = false
     ) {
-        BookmarksCardComposable(
-            bookmarks = bookmarksDto,
+        BookmarkCardComposable(
+            bookmarks = bookmarkDto,
             onClick = {}
         )
     }

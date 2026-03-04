@@ -21,11 +21,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
@@ -46,16 +49,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.brevisimo_news.domain.model.ArticleDto
-import com.example.brevisimo_news.domain.model.BookmarksDto
+import com.example.brevisimo_news.domain.model.BookmarkDto
 import com.example.brevisimo_news.domain.model.MediaDto
 import com.example.brevisimo_news.domain.model.SourceDto
 import com.example.brevisimo_news.ui.theme.Brevisimo_NewsTheme
 
 
 @Composable
-fun BookmarksCardComposable(
+fun BookmarkCardComposable(
     modifier: Modifier = Modifier,
-    bookmarks: BookmarksDto,
+    bookmarks: BookmarkDto,
     onClick: () -> Unit
 ) {
     OutlinedCard(
@@ -126,7 +129,8 @@ fun GridCardComposable(
     articleDto: ArticleDto,
     onClick: () -> Unit,
     onGetEntity: (articleContent: String) -> Unit,
-    @DrawableRes previewImage: Int? = null
+    @DrawableRes previewImage: Int? = null,
+    onSaveClick: () -> Unit
 ) {
     OutlinedCard(
         modifier = modifier
@@ -167,12 +171,33 @@ fun GridCardComposable(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    text = articleDto.source?.name ?: "Fuente desconocida",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    maxLines = 1
-                )
+                Row(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .height(IntrinsicSize.Min),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = articleDto.source?.name ?: "Fuente desconocida",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1
+                    )
+
+                    FilledTonalIconButton(
+                        onClick = onSaveClick,
+                        shape = RoundedCornerShape(8.dp),
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.BookmarkBorder,
+                            contentDescription = "Guardar en marcadores"
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -330,9 +355,9 @@ fun VerticalCardComposable (
     articleDto: ArticleDto? = null,
     @DrawableRes previewImage: Int? = R.drawable.imagen_para_renderizar,
     onClick: () -> Unit,
-    onGetEntity: (articleContent: String) -> Unit
+    onGetEntity: (articleContent: String) -> Unit,
+    onSaveClick: () -> Unit
 ) {
-
     OutlinedCard(
         modifier = modifier
             .fillMaxWidth()
@@ -418,6 +443,19 @@ fun VerticalCardComposable (
                         else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                     )
                 }
+                FilledTonalIconButton(
+                    onClick = onSaveClick,
+                    shape = RoundedCornerShape(8.dp),
+                    colors = IconButtonDefaults.filledTonalIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.BookmarkBorder,
+                        contentDescription = "Guardar en marcadores"
+                    )
+                }
             }
         }
     }
@@ -429,7 +467,8 @@ fun HorizontalCardComposable(
     articleDto: ArticleDto,
     @DrawableRes previewImage: Int? = null,
     onClick: () -> Unit,
-    onGetEntity: (articleContent: String) -> Unit
+    onGetEntity: (articleContent: String) -> Unit,
+    onSaveClick: () -> Unit
 ) {
     val isContentAvailable = !articleDto.content.isNullOrBlank()
 
@@ -524,6 +563,19 @@ fun HorizontalCardComposable(
                             Text("Analizar con IA", style = MaterialTheme.typography.labelSmall)
                         }
                     }
+                    FilledTonalIconButton(
+                        onClick = onSaveClick,
+                        shape = RoundedCornerShape(8.dp),
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.BookmarkBorder,
+                            contentDescription = "Guardar en marcadores"
+                        )
+                    }
                 }
             }
         }
@@ -559,7 +611,8 @@ fun GridPreview() {
             articleDto = articleDto,
             onClick = {},
             onGetEntity = {},
-            previewImage = R.drawable.imagen_para_renderizar
+            previewImage = R.drawable.imagen_para_renderizar,
+            onSaveClick = {}
         )
     }
 }
@@ -591,7 +644,8 @@ fun HorizontalPreview() {
             articleDto = articleDto,
             previewImage = R.drawable.imagen_para_renderizar ,
             onClick = {},
-            onGetEntity = {}
+            onGetEntity = {},
+            onSaveClick = {}
         )
     }
 }
@@ -623,7 +677,8 @@ fun VerticalPreview() {
             articleDto = articleDto,
             previewImage = R.drawable.imagen_para_renderizar ,
             onClick = {},
-            onGetEntity = {}
+            onGetEntity = {},
+            onSaveClick = {}
         )
     }
 }

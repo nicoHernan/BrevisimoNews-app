@@ -78,7 +78,7 @@ class NewsAppState (
             NavigationDestination.HOME -> HOME_SCREEN
             NavigationDestination.PROFILE -> PROFILE_SCREEN
             NavigationDestination.LOGIN -> LOGIN_SCREEN
-            NavigationDestination.BOOKMARKS -> BOOKMARKS_SCREEN
+            NavigationDestination.BOOKMARKS -> BOOKMARK_SCREEN
         }
 
         navHostController.navigate(route) {

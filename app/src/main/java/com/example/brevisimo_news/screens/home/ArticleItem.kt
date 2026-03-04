@@ -20,14 +20,16 @@ fun GridArticleItem(
     articleDto: ArticleDto,
     onClick: () -> Unit,
     onGetEntity: (articleContent: String) -> Unit,
-    @DrawableRes previewImage: Int?
+    @DrawableRes previewImage: Int?,
+    onSaveClick: () -> Unit
 ) {
     GridCardComposable(
         modifier = modifier,
         articleDto = articleDto,
         onClick = onClick,
         onGetEntity = onGetEntity,
-        previewImage = previewImage
+        previewImage = previewImage,
+        onSaveClick = onSaveClick
     )
 }
 @Composable
@@ -36,14 +38,16 @@ fun VerticalArticleItem (
     articleDto: ArticleDto,
     @DrawableRes previewImage: Int?,
     onClick: () -> Unit,
-    onGetEntity: (articleContent: String) -> Unit
+    onGetEntity: (articleContent: String) -> Unit,
+    onSaveClick: () -> Unit
 ){
     VerticalCardComposable(
         modifier = modifier,
         articleDto = articleDto,
         previewImage = previewImage,
         onClick = onClick,
-        onGetEntity = onGetEntity
+        onGetEntity = onGetEntity,
+        onSaveClick = onSaveClick
     )
 }
 
@@ -74,7 +78,8 @@ fun VerticalArticlePreview() {
             articleDto = articleDto,
             previewImage = R.drawable.imagen_para_renderizar,
             onClick = {},
-            onGetEntity = {}
+            onGetEntity = {},
+            onSaveClick = {}
         )
     }
 }
@@ -84,14 +89,16 @@ fun HorizontalArticleItem (
     articleDto: ArticleDto,
     @DrawableRes previewImage: Int? = null,
     onClick: () -> Unit,
-    onGetEntity: (articleContent: String) -> Unit
+    onGetEntity: (articleContent: String) -> Unit,
+    onSaveClick: () -> Unit
 ){
     HorizontalCardComposable(
         modifier = modifier,
         articleDto = articleDto,
         previewImage = previewImage,
         onClick = onClick,
-        onGetEntity = onGetEntity
+        onGetEntity = onGetEntity,
+        onSaveClick = onSaveClick
     )
 }
 
@@ -122,7 +129,8 @@ fun HorizontalArticlePreview() {
             articleDto = articleDto,
             previewImage = R.drawable.imagen_para_renderizar,
             onClick = {},
-            onGetEntity = {}
+            onGetEntity = {},
+            onSaveClick = {}
         )
     }
 }

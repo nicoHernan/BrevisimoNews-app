@@ -9,7 +9,6 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.brevisimo_news.screens.bookmarks.BookmarksViewModel
 import com.example.brevisimo_news.screens.profile.ProfileViewModel
 import com.example.brevisimo_news.ui.theme.Brevisimo_NewsTheme
 import dagger.hilt.android.AndroidEntryPoint

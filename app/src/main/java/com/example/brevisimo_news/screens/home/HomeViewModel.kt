@@ -9,10 +9,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.brevisimo_news.data.local.LayoutPreferences
 import com.example.brevisimo_news.data.repository.AIRepository
 import com.example.brevisimo_news.data.repository.AuthRepository
+import com.example.brevisimo_news.data.repository.BookmarkRepository
 import com.example.brevisimo_news.data.repository.HomeRepository
 import com.example.brevisimo_news.data.repository.Resource
 import com.example.brevisimo_news.domain.model.ArticleDto
-import com.example.brevisimo_news.domain.model.BookmarksDto
+import com.example.brevisimo_news.domain.model.BookmarkDto
 import com.example.brevisimo_news.domain.model.MediaDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -29,11 +30,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val bookmarkRepository: BookmarkRepository,
     private val homeRepository: HomeRepository,
     private val aiRepository: AIRepository,
     private val authRepository: AuthRepository,
-    private val layoutPreferences: LayoutPreferences,
-    //private val supabaseRepository: SupabaseRepository
+    private val layoutPreferences: LayoutPreferences
     ) : ViewModel() {
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
@@ -51,33 +52,36 @@ class HomeViewModel @Inject constructor(
 
     fun onSaveBookmark(article: ArticleDto) {
         viewModelScope.launch {
-            val currentUser = authRepository.getCurrentUser()
+            val userId = _homeUiState.value.userId
 
-            if (currentUser != null && !currentUser.isAnonymous) {
-                val firebaseId = currentUser.uid
+            if (userId != null) {
+                val result = bookmarkRepository.saveArticleAsBookmark(article, userId)
 
-                val bookmark = BookmarksDto(
-                    userId = firebaseId,
-                    title = article.title,
-                    url = article.url,
-                    bookmarksId = null,
-                    imageUrl = article.urlToImage ?: ""
-                )
-                try {
-                    //supabaseRepository.saveToBookmarks(bookmark)
-                } catch (e: Exception) {
+                result.onSuccess {
+                    Log.d("SUPABASE", "Noticia guardada correctamente")
+                }.onFailure { error ->
+                    Log.e("SUPABASE", "Error al guardar: ${error.message}")
                 }
             } else {
-                _sideEffects.send(HomeSideEffect.NavigateToLogin)
+                Log.w("SUPABASE", "Intento de guardar sin estar logueado")
             }
         }
     }
 
+
     private fun checkUserStatus() {
+        val currentUser = authRepository.getCurrentUser()
         val isAnonymous = authRepository.isUserAnonymous()
 
         _homeUiState.update { currentState ->
-            currentState.copy(isGuestUser = isAnonymous)
+            currentState.copy(
+                isGuestUser = isAnonymous,
+                userId = if (!isAnonymous){
+                    currentUser?.uid
+                } else{
+                    null
+                }
+            )
         }
     }
     private fun observeLayoutPreference() {

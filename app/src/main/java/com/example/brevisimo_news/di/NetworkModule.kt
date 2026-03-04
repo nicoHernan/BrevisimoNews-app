@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -18,6 +19,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @Named("NewsRetrofit")
     fun provideRetrofit(): Retrofit{
         val gson = GsonBuilder()
             .create()
@@ -30,7 +32,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideNewsApiService(retrofit: Retrofit): NewsApiService {
+    fun provideNewsApiService(@Named("NewsRetrofit") retrofit: Retrofit): NewsApiService {
         return retrofit.create(NewsApiService::class.java)
     }
 }

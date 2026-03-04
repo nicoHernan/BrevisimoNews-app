@@ -26,8 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.brevisimo_news.common.DrawerComposable
-import com.example.brevisimo_news.screens.bookmarks.BookmarksScreen
-import com.example.brevisimo_news.screens.bookmarks.BookmarksViewModel
+import com.example.brevisimo_news.screens.bookmark.BookmarkScreen
 import com.example.brevisimo_news.screens.profile.ProfileScreen
 import com.example.brevisimo_news.screens.category.CategoryScreen
 import com.example.brevisimo_news.screens.home.HomeScreen
@@ -197,11 +196,11 @@ fun NavGraphBuilder.newsGraph(newsAppState: NewsAppState, profileViewModel: Prof
             newsAppState = newsAppState
         )
     }
-    composable(BOOKMARKS_SCREEN) {
-        BookmarksScreen(
+    composable(BOOKMARK_SCREEN) {
+        BookmarkScreen(
             modifier = Modifier,
             newsAppState = newsAppState,
-            bookmarksViewModel = hiltViewModel()
+            bookmarkViewModel = hiltViewModel()
         )
     }
 }
