@@ -1,9 +1,9 @@
 package com.example.brevisimo_news.di
 
 
-import com.example.brevisimo_news.data.remote.SupabaseApiService
-import com.example.brevisimo_news.data.repository.BookmarkImpl
-import com.example.brevisimo_news.data.repository.BookmarkRepository
+import com.example.brevisimo_news.data.remote.BookmarkApiService
+import com.example.brevisimo_news.data.repository.bookmark.BookmarkImpl
+import com.example.brevisimo_news.domain.repository.BookmarkRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,7 +40,7 @@ object BookmarkModule {
 
     @Provides
     @Singleton
-    @Named("SupabaseRetrofit")
+    @Named("BookmarkRetrofit")
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -51,14 +51,14 @@ object BookmarkModule {
 
     @Provides
     @Singleton
-    fun provideSupabaseApiService(@Named("SupabaseRetrofit") retrofit: Retrofit): SupabaseApiService {
-        return retrofit.create(SupabaseApiService::class.java)
+    fun provideBookmarkApiService(@Named("BookmarkRetrofit") retrofit: Retrofit): BookmarkApiService {
+        return retrofit.create(BookmarkApiService::class.java)
     }
 
     @Provides
     @Singleton
     fun provideBookmarkRepository(
-        apiService: SupabaseApiService
+        apiService: BookmarkApiService
     ): BookmarkRepository {
         return BookmarkImpl(apiService)
     }

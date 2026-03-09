@@ -7,11 +7,11 @@ import androidx.credentials.CredentialManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.brevisimo_news.data.local.LayoutPreferences
-import com.example.brevisimo_news.data.repository.AIRepository
-import com.example.brevisimo_news.data.repository.AuthRepository
-import com.example.brevisimo_news.data.repository.BookmarkRepository
-import com.example.brevisimo_news.data.repository.HomeRepository
-import com.example.brevisimo_news.data.repository.Resource
+import com.example.brevisimo_news.domain.repository.AIRepository
+import com.example.brevisimo_news.domain.repository.AuthRepository
+import com.example.brevisimo_news.domain.repository.BookmarkRepository
+import com.example.brevisimo_news.domain.repository.HomeRepository
+import com.example.brevisimo_news.domain.Resource
 import com.example.brevisimo_news.domain.model.ArticleDto
 import com.example.brevisimo_news.domain.model.BookmarkDto
 import com.example.brevisimo_news.domain.model.MediaDto

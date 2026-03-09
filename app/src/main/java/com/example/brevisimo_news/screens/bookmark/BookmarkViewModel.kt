@@ -3,8 +3,9 @@ package com.example.brevisimo_news.screens.bookmark
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.brevisimo_news.data.repository.AuthRepository
-import com.example.brevisimo_news.data.repository.BookmarkRepository
+import com.example.brevisimo_news.domain.repository.AuthRepository
+import com.example.brevisimo_news.domain.repository.BookmarkRepository
+import com.example.brevisimo_news.domain.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class BookmarkViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val bookmarkRepository: BookmarkRepository
+    private val bookmarkRepository: BookmarkRepository,
+    private val profileRepository: ProfileRepository
 ): ViewModel() {
     private val _bookmarkUiState = MutableStateFlow(BookmarkUiState())
     val bookmarkUiState: StateFlow<BookmarkUiState> = _bookmarkUiState.asStateFlow()
@@ -35,7 +37,7 @@ class BookmarkViewModel @Inject constructor(
                     currentState.copy(isAppLoading = true, isError = false)
                 }
 
-                val result = bookmarkRepository.getBookmarks(currentUser.uid)
+                val result = profileRepository.getProfileBookmark(currentUser.uid)
 
                 result.onSuccess { bookmarkDto ->
                     _bookmarkUiState.update {currentState->

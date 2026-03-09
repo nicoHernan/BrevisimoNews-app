@@ -1,4 +1,4 @@
-package com.example.brevisimo_news.data.repository
+package com.example.brevisimo_news.domain
 
 sealed class Resource <out T> {
     data object Loading: Resource<Nothing>()

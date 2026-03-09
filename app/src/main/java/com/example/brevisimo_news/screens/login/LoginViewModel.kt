@@ -9,8 +9,8 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.brevisimo_news.R
-import com.example.brevisimo_news.data.repository.AuthRepository
-import com.example.brevisimo_news.data.repository.Resource
+import com.example.brevisimo_news.domain.repository.AuthRepository
+import com.example.brevisimo_news.domain.Resource
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel

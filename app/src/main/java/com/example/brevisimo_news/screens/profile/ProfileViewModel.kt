@@ -7,8 +7,8 @@ import androidx.credentials.CredentialManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.brevisimo_news.data.local.LayoutPreferences
-import com.example.brevisimo_news.data.repository.AuthRepository
-import com.example.brevisimo_news.data.repository.Resource
+import com.example.brevisimo_news.domain.repository.AuthRepository
+import com.example.brevisimo_news.domain.Resource
 import com.example.brevisimo_news.screens.home.HomeSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

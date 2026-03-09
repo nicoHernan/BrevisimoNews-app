@@ -1,7 +1,7 @@
 package com.example.brevisimo_news.di
 
-import com.example.brevisimo_news.data.repository.AIRepository
-import com.example.brevisimo_news.data.repository.AIRepositoryImpl
+import com.example.brevisimo_news.domain.repository.AIRepository
+import com.example.brevisimo_news.data.repository.ai.AIRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

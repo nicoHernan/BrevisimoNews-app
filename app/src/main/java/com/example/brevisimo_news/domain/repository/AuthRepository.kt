@@ -1,5 +1,6 @@
-package com.example.brevisimo_news.data.repository
+package com.example.brevisimo_news.domain.repository
 
+import com.example.brevisimo_news.domain.Resource
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 

@@ -1,4 +1,4 @@
-package com.example.brevisimo_news.data.repository
+package com.example.brevisimo_news.domain.repository
 
 import com.example.brevisimo_news.domain.model.ArticleDto
 import com.example.brevisimo_news.domain.model.MediaDto

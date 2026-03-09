@@ -1,7 +1,7 @@
 package com.example.brevisimo_news.data.remote
 
 import com.example.brevisimo_news.domain.model.MediaResponse
-import com.example.brevisimo_news.domain.model.NewsResponse
+import com.example.brevisimo_news.domain.response.NewsResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

@@ -1,7 +1,7 @@
 package com.example.brevisimo_news.di
 
-import com.example.brevisimo_news.data.repository.HomeRepository
-import com.example.brevisimo_news.data.repository.HomeRepositoryImpl
+import com.example.brevisimo_news.domain.repository.HomeRepository
+import com.example.brevisimo_news.data.repository.home.HomeRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

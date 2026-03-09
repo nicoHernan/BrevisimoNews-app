@@ -3,7 +3,7 @@ package com.example.brevisimo_news.screens.category
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.brevisimo_news.data.repository.HomeRepository
+import com.example.brevisimo_news.domain.repository.HomeRepository
 import com.example.brevisimo_news.domain.model.MediaDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

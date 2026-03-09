@@ -1,8 +1,9 @@
-package com.example.brevisimo_news.data.repository
+package com.example.brevisimo_news.data.repository.home
 
 import com.example.brevisimo_news.data.local.CategoryDataSource
 import com.example.brevisimo_news.data.local.MediaDataSource
 import com.example.brevisimo_news.data.remote.NewsApiService
+import com.example.brevisimo_news.domain.repository.HomeRepository
 import com.example.brevisimo_news.domain.model.ArticleDto
 import com.example.brevisimo_news.domain.model.MediaDto
 import javax.inject.Inject

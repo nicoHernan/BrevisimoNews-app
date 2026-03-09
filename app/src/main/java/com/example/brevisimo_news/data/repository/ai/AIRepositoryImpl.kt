@@ -1,5 +1,6 @@
-package com.example.brevisimo_news.data.repository
+package com.example.brevisimo_news.data.repository.ai
 
+import com.example.brevisimo_news.domain.repository.AIRepository
 import com.google.firebase.ai.GenerativeModel
 import javax.inject.Inject
 
