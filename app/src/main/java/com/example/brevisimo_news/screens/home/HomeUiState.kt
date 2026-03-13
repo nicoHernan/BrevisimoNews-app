@@ -17,5 +17,6 @@ data class HomeUiState(
     val isError: Boolean = false,
     val valueSearch: String = "",
     val isGuestUser: Boolean = true,
-    val isGridLayout: Boolean = false
+    val isGridLayout: Boolean = false,
+    val savedBookmarkUrl: List<String> = emptyList()
 )

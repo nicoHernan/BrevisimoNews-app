@@ -21,7 +21,8 @@ fun GridArticleItem(
     onClick: () -> Unit,
     onGetEntity: (articleContent: String) -> Unit,
     @DrawableRes previewImage: Int?,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    isSaved: Boolean = false
 ) {
     GridCardComposable(
         modifier = modifier,
@@ -29,7 +30,8 @@ fun GridArticleItem(
         onClick = onClick,
         onGetEntity = onGetEntity,
         previewImage = previewImage,
-        onSaveClick = onSaveClick
+        onSaveClick = onSaveClick,
+        isSaved = isSaved
     )
 }
 @Composable
@@ -39,7 +41,8 @@ fun VerticalArticleItem (
     @DrawableRes previewImage: Int?,
     onClick: () -> Unit,
     onGetEntity: (articleContent: String) -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    isSaved: Boolean = false
 ){
     VerticalCardComposable(
         modifier = modifier,
@@ -47,7 +50,8 @@ fun VerticalArticleItem (
         previewImage = previewImage,
         onClick = onClick,
         onGetEntity = onGetEntity,
-        onSaveClick = onSaveClick
+        onSaveClick = onSaveClick,
+        isSaved = isSaved
     )
 }
 
@@ -90,7 +94,8 @@ fun HorizontalArticleItem (
     @DrawableRes previewImage: Int? = null,
     onClick: () -> Unit,
     onGetEntity: (articleContent: String) -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    isSaved: Boolean = false
 ){
     HorizontalCardComposable(
         modifier = modifier,
@@ -98,7 +103,8 @@ fun HorizontalArticleItem (
         previewImage = previewImage,
         onClick = onClick,
         onGetEntity = onGetEntity,
-        onSaveClick = onSaveClick
+        onSaveClick = onSaveClick,
+        isSaved = isSaved
     )
 }
 

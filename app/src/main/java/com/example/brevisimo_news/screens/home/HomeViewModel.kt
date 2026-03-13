@@ -15,6 +15,7 @@ import com.example.brevisimo_news.domain.Resource
 import com.example.brevisimo_news.domain.model.ArticleDto
 import com.example.brevisimo_news.domain.model.BookmarkDto
 import com.example.brevisimo_news.domain.model.MediaDto
+import com.example.brevisimo_news.domain.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val profileRepository: ProfileRepository,
     private val bookmarkRepository: BookmarkRepository,
     private val homeRepository: HomeRepository,
     private val aiRepository: AIRepository,
@@ -43,6 +45,7 @@ class HomeViewModel @Inject constructor(
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
+        loadSavedUrls()
         checkUserStatus()
         observeLayoutPreference()
         loadListOfCategory()
@@ -50,7 +53,27 @@ class HomeViewModel @Inject constructor(
         loadMediaSourcesForDrawer()
     }
 
+    private fun loadSavedUrls() {
+        viewModelScope.launch {
+            val userId = _homeUiState.value.userId
+            if (userId != null) {
+                val result = profileRepository.getProfileBookmark(userId)
+                result.onSuccess { bookmarkDto ->
+                    val urls = bookmarkDto.map { it.url }
+                    _homeUiState.update { currentState ->
+                        currentState.copy(savedBookmarkUrl = urls)
+                    }
+                }
+            }
+        }
+    }
     fun onSaveBookmark(article: ArticleDto) {
+        val currentSavedUrl = _homeUiState.value.savedBookmarkUrl
+        if (currentSavedUrl.contains(article.url)){
+            Log.d("SUPABASE", "El artículo ya existe en la lista de marcadores.")
+            return
+        }
+
         viewModelScope.launch {
             val userId = _homeUiState.value.userId
 
@@ -58,7 +81,12 @@ class HomeViewModel @Inject constructor(
                 val result = bookmarkRepository.saveArticleAsBookmark(article, userId)
 
                 result.onSuccess {
-                    Log.d("SUPABASE", "Noticia guardada correctamente")
+                    _homeUiState.update {currentState ->
+                        currentState.copy(
+                            savedBookmarkUrl = currentState.savedBookmarkUrl + article.url
+                        )
+                    }
+                    Log.d("SUPABASE", "Noticia guardada con éxito")
                 }.onFailure { error ->
                     Log.e("SUPABASE", "Error al guardar: ${error.message}")
                 }
@@ -114,8 +142,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-
-     fun getEntity(articleContent: String) {
+    fun getEntity(articleContent: String) {
         viewModelScope.launch {
             _homeUiState.update { currentState ->
                 currentState.copy(isAiLoading = true, isError = false)
@@ -210,7 +237,6 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun loadListOfCategory() {
         _homeUiState.update { currentState ->

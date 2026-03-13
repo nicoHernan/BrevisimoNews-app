@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.Card
@@ -58,7 +59,7 @@ import com.example.brevisimo_news.ui.theme.Brevisimo_NewsTheme
 @Composable
 fun BookmarkCardComposable(
     modifier: Modifier = Modifier,
-    bookmarks: BookmarkDto,
+    bookmark: BookmarkDto,
     onClick: () -> Unit
 ) {
     OutlinedCard(
@@ -76,9 +77,9 @@ fun BookmarkCardComposable(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min)
         ) {
-            if (!bookmarks.imageUrl.isNullOrBlank()) {
+            if (!bookmark.imageUrl.isNullOrBlank()) {
                 AsyncImage(
-                    model = bookmarks.imageUrl,
+                    model = bookmark.imageUrl,
                     contentDescription = null,
                     modifier = Modifier
                         .width(120.dp)
@@ -92,7 +93,7 @@ fun BookmarkCardComposable(
                     .weight(1f)
             ) {
                 Text(
-                    text = bookmarks.sourceName?.uppercase() ?: "NOTICIA",
+                    text = bookmark.sourceName?.uppercase() ?: "NOTICIA",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
@@ -101,7 +102,7 @@ fun BookmarkCardComposable(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = bookmarks.title,
+                    text = bookmark.title,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.ExtraBold,
                     maxLines = 2,
@@ -110,9 +111,9 @@ fun BookmarkCardComposable(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                if (!bookmarks.description.isNullOrBlank()) {
+                if (!bookmark.description.isNullOrBlank()) {
                     Text(
-                        text = bookmarks.description,
+                        text = bookmark.description,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
@@ -123,6 +124,34 @@ fun BookmarkCardComposable(
         }
     }
 }
+
+@Preview(
+    showBackground = true,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "BookmarkCardDarkPreview"
+)
+@Preview
+@Composable
+fun BookmarkCardPreview() {
+    Brevisimo_NewsTheme {
+        val bookmarkDto = BookmarkDto(
+                bookmarkId = "",
+                userId = "",
+                title = "These are the agencies Trump is purging during the shutdown - Axios",
+                description = "Thousands are being let go from agencies overseeing health care, the environment and education.",
+                url = "https://www.axios.com/2025/10/10/trump-federal-layoffs-treasury-education-health",
+                imageUrl = "https://images.axios.com/aQmahivTarO_bl7hCJ7B1Pe5BNQ=/0x73:8076x4616/1366x768/2025/10/10/1760128847374.jpg",
+                sourceName = "BBC",
+                createdAt = "2025-10-11T15:44:45Z"
+            )
+        BookmarkCardComposable(
+            modifier = Modifier,
+            bookmark = bookmarkDto,
+            onClick = {}
+        )
+    }
+}
+
 @Composable
 fun GridCardComposable(
     modifier: Modifier = Modifier,
@@ -130,7 +159,8 @@ fun GridCardComposable(
     onClick: () -> Unit,
     onGetEntity: (articleContent: String) -> Unit,
     @DrawableRes previewImage: Int? = null,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    isSaved: Boolean = false
 ) {
     OutlinedCard(
         modifier = modifier
@@ -193,7 +223,7 @@ fun GridCardComposable(
                         )
                     ) {
                         Icon(
-                            imageVector = Icons.Default.BookmarkBorder,
+                            imageVector = if(isSaved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
                             contentDescription = "Guardar en marcadores"
                         )
                     }
@@ -356,7 +386,8 @@ fun VerticalCardComposable (
     @DrawableRes previewImage: Int? = R.drawable.imagen_para_renderizar,
     onClick: () -> Unit,
     onGetEntity: (articleContent: String) -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    isSaved: Boolean = false
 ) {
     OutlinedCard(
         modifier = modifier
@@ -452,7 +483,7 @@ fun VerticalCardComposable (
                     )
                 ) {
                     Icon(
-                        imageVector = Icons.Default.BookmarkBorder,
+                        imageVector = if(isSaved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
                         contentDescription = "Guardar en marcadores"
                     )
                 }
@@ -468,7 +499,8 @@ fun HorizontalCardComposable(
     @DrawableRes previewImage: Int? = null,
     onClick: () -> Unit,
     onGetEntity: (articleContent: String) -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    isSaved: Boolean = false
 ) {
     val isContentAvailable = !articleDto.content.isNullOrBlank()
 
@@ -572,7 +604,7 @@ fun HorizontalCardComposable(
                         )
                     ) {
                         Icon(
-                            imageVector = Icons.Default.BookmarkBorder,
+                            imageVector = if(isSaved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
                             contentDescription = "Guardar en marcadores"
                         )
                     }

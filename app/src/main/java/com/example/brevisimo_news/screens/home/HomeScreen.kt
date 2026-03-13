@@ -2,6 +2,7 @@ package com.example.brevisimo_news.screens.home
 
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -77,7 +78,6 @@ fun HomeScreen(
     windowSizeClass: WindowSizeClass,
     newsAppState: NewsAppState
 ) {
-    val context = LocalContext.current
     val homeUiState by homeViewModel.homeUiState.collectAsStateWithLifecycle()
     val filteredArticles by homeViewModel.filteredArticles.collectAsStateWithLifecycle()
 
@@ -162,6 +162,8 @@ fun HomeContent (
     onGetEntity: (articleContent: String) -> Unit,
     onSaveBookmark: (ArticleDto) -> Unit
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -220,13 +222,22 @@ fun HomeContent (
                         .weight(1f)
                 ){
                     items(articleDto) { articleDto ->
+                        val isSaved = homeUiState.savedBookmarkUrl.contains(articleDto.url)
                         GridArticleItem(
                             modifier = Modifier.fillMaxWidth(),
                             articleDto = articleDto,
                             onClick = { onArticleDto(articleDto) },
                             onGetEntity = onGetEntity,
                             previewImage = R.drawable.imagen_para_renderizar,
-                            onSaveClick = {onSaveBookmark(articleDto)}
+                            onSaveClick = {
+                                if (!isSaved){
+                                    onSaveBookmark(articleDto)
+                                    Toast.makeText(context, "Artículo guardado con éxito", Toast.LENGTH_SHORT).show()
+                                }else{
+                                    Toast.makeText(context, "Este artículo ya está en tus marcadores", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            isSaved = isSaved
                         )
                     }
                 }
@@ -239,13 +250,22 @@ fun HomeContent (
                         .weight(1f)
                 ) {
                     items(articleDto) { articleDto ->
+                        val isSaved = homeUiState.savedBookmarkUrl.contains(articleDto.url)
                         VerticalArticleItem(
                             modifier = Modifier.fillMaxWidth(),
                             articleDto = articleDto,
                             previewImage = R.drawable.imagen_para_renderizar,
                             onClick = {onArticleDto(articleDto)},
                             onGetEntity = onGetEntity,
-                            onSaveClick = {onSaveBookmark(articleDto)}
+                            onSaveClick = {
+                                if (!isSaved){
+                                    onSaveBookmark(articleDto)
+                                    Toast.makeText(context, "Artículo guardado con éxito", Toast.LENGTH_SHORT).show()
+                                }else{
+                                    Toast.makeText(context, "Este artículo ya está en tus marcadores", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            isSaved = isSaved
                         )
                     }
                 }

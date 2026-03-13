@@ -50,6 +50,7 @@ import com.example.brevisimo_news.HOME_SCREEN
 import com.example.brevisimo_news.NewsAppState
 import com.example.brevisimo_news.common.BookmarkCardComposable
 import com.example.brevisimo_news.domain.model.BookmarkDto
+import com.example.brevisimo_news.ui.theme.Brevisimo_NewsTheme
 import kotlin.Unit
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,7 +86,7 @@ fun BookmarkContent(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(50.dp))
 
         when {
             bookmarkUiState.isLoading -> {
@@ -104,7 +105,7 @@ fun BookmarkContent(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(items = bookmarkDto, key = { it.bookmarkId ?: "" }) { bookmarkDto ->
+                    items(items = bookmarkDto) { bookmarkDto ->
                         BookmarkItemWithDismiss(
                             bookmarkDto = bookmarkDto,
                             onDelete = onDelete,
@@ -157,11 +158,11 @@ fun BookmarkPortraitLayout(
 )
 @Preview(showBackground = true)
 @Composable
-fun BookmarkPreview(){
-    val bookmarkDto = List(10){
+fun BookmarkPreview() {
+    val bookmarkDto = List(10) {
         BookmarkDto(
-            bookmarkId = "1",
-            userId = "5",
+            bookmarkId = "",
+            userId = "",
             title = "These are the agencies Trump is purging during the shutdown - Axios",
             description = "Thousands are being let go from agencies overseeing health care, the environment and education.",
             url = "https://www.axios.com/2025/10/10/trump-federal-layoffs-treasury-education-health",
@@ -171,14 +172,16 @@ fun BookmarkPreview(){
         )
     }
     val bookmarkUiState = BookmarkUiState(bookmarkDto = bookmarkDto)
-    BookmarkPortraitLayout(
-        modifier = Modifier,
-        bookmarkDto = bookmarkDto,
-        navigateBack = {},
-        bookmarkUiState = bookmarkUiState,
-        onNavigateToHome = {},
-        onDelete = {}
-    )
+    Brevisimo_NewsTheme {
+        BookmarkPortraitLayout(
+            modifier = Modifier,
+            bookmarkDto = bookmarkDto,
+            navigateBack = {},
+            bookmarkUiState = bookmarkUiState,
+            onNavigateToHome = {},
+            onDelete = {}
+        )
+    }
 }
 
 @Composable
@@ -280,8 +283,9 @@ fun BookmarkItemWithDismiss(
         enableDismissFromStartToEnd = false
     ) {
         BookmarkCardComposable(
-            bookmarks = bookmarkDto,
-            onClick = {}
+            onClick = {},
+            modifier = Modifier,
+            bookmark = bookmarkDto
         )
     }
 }
