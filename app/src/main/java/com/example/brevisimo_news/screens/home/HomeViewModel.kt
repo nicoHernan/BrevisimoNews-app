@@ -45,15 +45,40 @@ class HomeViewModel @Inject constructor(
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
-        loadSavedUrls()
         checkUserStatus()
         observeLayoutPreference()
+        loadSavedUrls()
         loadListOfCategory()
         loadNewsInUs()
         loadMediaSourcesForDrawer()
     }
 
-    private fun loadSavedUrls() {
+    fun deleteBookmark(articleUrl: String) {
+        viewModelScope.launch {
+            val resultList = profileRepository.getProfileBookmark(_homeUiState.value.userId ?: "")
+            resultList.onSuccess {bookmarkDto->
+                val bookmarkToDelete = bookmarkDto.find {bookmarkDto->
+                    bookmarkDto.url == articleUrl
+                }
+                bookmarkToDelete?.let { bookmarkDto ->
+                    val result = bookmarkRepository.deleteBookmark(bookmarkDto.bookmarkId ?: "")
+
+                    result.onSuccess {
+                        _homeUiState.update { currentState ->
+                            currentState.copy(
+                                savedBookmarkUrl = currentState.savedBookmarkUrl - articleUrl
+                            )
+                        }
+                        Log.d("SUPABASE", "Eliminado con éxito")
+                    }.onFailure {
+                        Log.e("SUPABASE", "Error al eliminar")
+                    }
+                }
+            }
+        }
+    }
+
+     fun loadSavedUrls() {
         viewModelScope.launch {
             val userId = _homeUiState.value.userId
             if (userId != null) {
@@ -95,7 +120,6 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun checkUserStatus() {
         val currentUser = authRepository.getCurrentUser()
@@ -252,12 +276,9 @@ class HomeViewModel @Inject constructor(
                 if (query.isBlank()) {
                     originalList
                 } else {
-
                     originalList.filter { article ->
-
                         val titleMatch = article.title.lowercase().contains(query)
                         val descriptionMatch = article.description?.lowercase()?.contains(query) ?: false
-
                         titleMatch || descriptionMatch
                     }
                 }

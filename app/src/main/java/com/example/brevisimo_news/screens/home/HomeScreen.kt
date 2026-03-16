@@ -41,6 +41,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -62,6 +63,7 @@ import com.example.brevisimo_news.common.BottomNavigationBarComposable
 import com.example.brevisimo_news.common.NavigationRailComposable
 import com.example.brevisimo_news.common.SearchComposable
 import com.example.brevisimo_news.domain.model.ArticleDto
+import com.example.brevisimo_news.domain.model.BookmarkDto
 import com.example.brevisimo_news.domain.model.SourceDto
 import com.example.brevisimo_news.ui.theme.Brevisimo_NewsTheme
 
@@ -80,6 +82,10 @@ fun HomeScreen(
 ) {
     val homeUiState by homeViewModel.homeUiState.collectAsStateWithLifecycle()
     val filteredArticles by homeViewModel.filteredArticles.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        homeViewModel.loadSavedUrls()
+    }
 
 
     when(windowSizeClass.widthSizeClass){
@@ -114,7 +120,8 @@ fun HomeScreen(
                 },
                 snackbarHostState = newsAppState.snackbarHostState,
                 selectedDestination = newsAppState.getCurrentDestination(),
-                onSaveBookmark = homeViewModel::onSaveBookmark
+                onSaveBookmark = homeViewModel::onSaveBookmark,
+                onDeleteBookmark = homeViewModel::deleteBookmark
             )
         }
 
@@ -142,12 +149,12 @@ fun HomeScreen(
                     }
                 },
                 selectedDestination = newsAppState.getCurrentDestination(),
-                onSaveBookmark = homeViewModel::onSaveBookmark
+                onSaveBookmark = homeViewModel::onSaveBookmark,
+                onDeleteBookmark = homeViewModel::deleteBookmark
             )
         }
     }
 }
-
 
 
 @Composable
@@ -160,7 +167,8 @@ fun HomeContent (
     onCategorySelected: (String) -> Unit,
     onArticleDto: (articleDto: ArticleDto) -> Unit,
     onGetEntity: (articleContent: String) -> Unit,
-    onSaveBookmark: (ArticleDto) -> Unit
+    onSaveBookmark: (ArticleDto) -> Unit,
+    onDeleteBookmark: (articleUrl: String) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -168,7 +176,7 @@ fun HomeContent (
         modifier = Modifier.fillMaxSize()
     ) {
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         SearchComposable(
             modifier = Modifier
@@ -180,11 +188,11 @@ fun HomeContent (
             icon = Icons.Filled.Search
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(categories) { category ->
                 CategoryFilterItem(
@@ -195,7 +203,7 @@ fun HomeContent (
             }
         }
 
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         if (articleDto.isEmpty()) {
             Box(
@@ -214,11 +222,10 @@ fun HomeContent (
             if (homeUiState.isGridLayout) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier
-                        .fillMaxWidth()
                         .weight(1f)
                 ){
                     items(articleDto) { articleDto ->
@@ -234,6 +241,7 @@ fun HomeContent (
                                     onSaveBookmark(articleDto)
                                     Toast.makeText(context, "Artículo guardado con éxito", Toast.LENGTH_SHORT).show()
                                 }else{
+                                    onDeleteBookmark(articleDto.url)
                                     Toast.makeText(context, "Este artículo ya está en tus marcadores", Toast.LENGTH_SHORT).show()
                                 }
                             },
@@ -243,10 +251,9 @@ fun HomeContent (
                 }
             } else{
                 LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier
-                        .fillMaxWidth()
                         .weight(1f)
                 ) {
                     items(articleDto) { articleDto ->
@@ -255,14 +262,23 @@ fun HomeContent (
                             modifier = Modifier.fillMaxWidth(),
                             articleDto = articleDto,
                             previewImage = R.drawable.imagen_para_renderizar,
-                            onClick = {onArticleDto(articleDto)},
+                            onClick = { onArticleDto(articleDto) },
                             onGetEntity = onGetEntity,
                             onSaveClick = {
-                                if (!isSaved){
+                                if (!isSaved) {
                                     onSaveBookmark(articleDto)
-                                    Toast.makeText(context, "Artículo guardado con éxito", Toast.LENGTH_SHORT).show()
-                                }else{
-                                    Toast.makeText(context, "Este artículo ya está en tus marcadores", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        "Artículo guardado con éxito",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    onDeleteBookmark(articleDto.url)
+                                    Toast.makeText(
+                                        context,
+                                        "Este artículo ya está en tus marcadores",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             },
                             isSaved = isSaved
@@ -293,7 +309,8 @@ fun HomePortraitLayout (
     onBookmarksIcon: () -> Unit,
     snackbarHostState: SnackbarHostState,
     selectedDestination: NavigationDestination,
-    onSaveBookmark: (ArticleDto) -> Unit
+    onSaveBookmark: (ArticleDto) -> Unit,
+    onDeleteBookmark: (articleUrl: String) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -321,7 +338,8 @@ fun HomePortraitLayout (
                     IconButton(onClick = openDrawer) {
                         Icon(
                             imageVector = Icons.Filled.Menu,
-                            contentDescription = "Abrir Menú"
+                            contentDescription = "Abrir Menú",
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
@@ -342,7 +360,8 @@ fun HomePortraitLayout (
                         onCategorySelected = onCategorySelected,
                         onArticleDto = onArticleDto,
                         onGetEntity = onGetEntity,
-                        onSaveBookmark = onSaveBookmark
+                        onSaveBookmark = onSaveBookmark,
+                        onDeleteBookmark = onDeleteBookmark
                     )
                 }
 
@@ -355,24 +374,19 @@ fun HomePortraitLayout (
                 }
         },
         bottomBar = {
-            Surface(
-                tonalElevation = 3.dp,
-                shadowElevation = 8.dp
-            ) {
-                BottomNavigationBarComposable(
-                    modifier = Modifier.navigationBarsPadding(),
-                    textHome = R.string.home_navigation_bar,
-                    textProfile = R.string.profile_navigation_bar,
-                    iconHome = Icons.Filled.Home,
-                    iconProfile = Icons.Filled.Person,
-                    onHomeNavigationIcon = onHomeIcon,
-                    onProfileNavigationIcon = onProfileIcon,
-                    selectedDestination = selectedDestination,
-                    textBookmarks = R.string.bookmarks_navigation_bar,
-                    iconBookmarks = Icons.Filled.BookmarkBorder,
-                    onBookmarksNavigationIcon = onBookmarksIcon
-                )
-            }
+            BottomNavigationBarComposable(
+                modifier = Modifier.navigationBarsPadding(),
+                textHome = R.string.home_navigation_bar,
+                textProfile = R.string.profile_navigation_bar,
+                iconHome = Icons.Filled.Home,
+                iconProfile = Icons.Filled.Person,
+                onHomeNavigationIcon = onHomeIcon,
+                onProfileNavigationIcon = onProfileIcon,
+                selectedDestination = selectedDestination,
+                textBookmarks = R.string.bookmarks_navigation_bar,
+                iconBookmarks = Icons.Filled.BookmarkBorder,
+                onBookmarksNavigationIcon = onBookmarksIcon
+            )
         }
     )
 }
@@ -394,7 +408,8 @@ fun HomeLandscapeLayout(
     onHomeClick: () -> Unit,
     onProfileClick: () -> Unit,
     selectedDestination: NavigationDestination,
-    onSaveBookmark: (ArticleDto) -> Unit
+    onSaveBookmark: (ArticleDto) -> Unit,
+    onDeleteBookmark: (articleUrl: String) -> Unit
 ) {
     Row(modifier = modifier.fillMaxSize()) {
         NavigationRailComposable(
@@ -424,7 +439,8 @@ fun HomeLandscapeLayout(
                     onCategorySelected = onCategorySelected,
                     onArticleDto = onArticleDto,
                     onGetEntity = onGetEntity,
-                    onSaveBookmark = onSaveBookmark
+                    onSaveBookmark = onSaveBookmark,
+                    onDeleteBookmark = onDeleteBookmark
                 )
             }
 
@@ -462,6 +478,7 @@ fun PortraitPreview() {
             content = "What they're saying: A spokesperson for the largest federal employee union, the American Federation of Government Employees, told Axios that the Trump administration is \\\"illegally\\\" firing thousands o… [+4094 chars]"
         )
     }
+
     Brevisimo_NewsTheme{
         HomePortraitLayout(
             modifier = Modifier,
@@ -479,7 +496,8 @@ fun PortraitPreview() {
             onBookmarksIcon = {},
             snackbarHostState = snackbarHostState,
             selectedDestination = NavigationDestination.HOME,
-            onSaveBookmark = {}
+            onSaveBookmark = {},
+            onDeleteBookmark = {}
         )
     }
 }

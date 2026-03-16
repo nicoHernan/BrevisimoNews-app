@@ -1,6 +1,7 @@
 package com.example.brevisimo_news.screens.home
 
 import com.example.brevisimo_news.domain.model.ArticleDto
+import com.example.brevisimo_news.domain.model.BookmarkDto
 import com.example.brevisimo_news.domain.model.MediaDto
 import com.example.brevisimo_news.domain.model.SourceDto
 

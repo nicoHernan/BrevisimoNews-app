@@ -1,6 +1,7 @@
 package com.example.brevisimo_news.screens.bookmark
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -83,6 +85,7 @@ fun BookmarkContent(
     onNavigateToHome: () -> Unit,
     onDelete: (bookmarksId: String) -> Unit
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -109,7 +112,7 @@ fun BookmarkContent(
                         BookmarkItemWithDismiss(
                             bookmarkDto = bookmarkDto,
                             onDelete = onDelete,
-                            onClick = { /* Abrir URL */ }
+                            onClick = { Toast.makeText(context, "Desliza el Artículo para borrar", Toast.LENGTH_SHORT).show() }
                         )
                     }
                 }
@@ -249,6 +252,7 @@ fun BookmarkItemWithDismiss(
     onDelete: (bookmarkId: String) -> Unit,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
             if (it == SwipeToDismissBoxValue.EndToStart) {
@@ -283,7 +287,7 @@ fun BookmarkItemWithDismiss(
         enableDismissFromStartToEnd = false
     ) {
         BookmarkCardComposable(
-            onClick = {},
+            onClick = {Toast.makeText(context, "Desliza el Artículo para borrar", Toast.LENGTH_SHORT).show()},
             modifier = Modifier,
             bookmark = bookmarkDto
         )
