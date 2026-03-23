@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.BookmarkBorder
@@ -50,7 +51,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.brevisimo_news.BOOKMARK_SCREEN
 import com.example.brevisimo_news.HOME_SCREEN
 import com.example.brevisimo_news.NewsAppState
+import com.example.brevisimo_news.R
 import com.example.brevisimo_news.common.BookmarkCardComposable
+import com.example.brevisimo_news.common.TopNavigationBarComposable
 import com.example.brevisimo_news.domain.model.BookmarkDto
 import com.example.brevisimo_news.ui.theme.Brevisimo_NewsTheme
 import kotlin.Unit
@@ -132,17 +135,16 @@ fun BookmarkPortraitLayout(
     onDelete: (bookmarksId: String) -> Unit
 ) {
     Scaffold(
+        modifier = modifier.fillMaxSize(),
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("MIS FAVORITOS", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = navigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                    }
-                }
+            TopNavigationBarComposable(
+                modifier = modifier,
+                titleText = R.string.top_bar_bookmark_title,
+                onNavigationIconClick = navigateBack,
+                navigationIconVector = Icons.Filled.ArrowBack
             )
         },
-    content = { paddingValues ->
+        content = { paddingValues ->
             BookmarkContent(
                 modifier = Modifier.padding(paddingValues),
                 bookmarkDto = bookmarkDto,
@@ -150,7 +152,8 @@ fun BookmarkPortraitLayout(
                 onNavigateToHome = onNavigateToHome,
                 onDelete = onDelete
             )
-        }
+        },
+            bottomBar = {}
     )
 }
 

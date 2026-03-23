@@ -4,17 +4,18 @@
     <!-- COMMON -->
     <string name="placeholder_search">Search the entire site</string>
     <string name="home_navigation_bar">Home</string>
-    <string name="top_navigation_bar">Go back</string>
     <string name="profile_navigation_bar">Profile</string>
     <string name="bookmarks_navigation_bar">Bookmarks</string>
     <string name="drawer_composable">Media</string>
     <!-- PROFILE -->
+    <string name="top_bar_profile_title">Perfil</string>
     <string name="outlinedButton_composable">Iniciar Sesión con Google</string>
     <string name="button_composable">Continuar como Invitado</string>
-    <string name="bottomBar_text">Accede a tus noticias favoritas y sincroniza tu lectura.</string>
-
+    <!-- CATEGORY -->
+    <string name="top_bar_category_title">Categoria</string>
     <!-- LOGIN -->
+    <string name="bottom_bar_text">Accede a tus noticias favoritas y sincroniza tu lectura.</string>
     <string name="default_web_client_id">650439464002-7skf4s4snuh10piuh1q0946bdh0nuk80.apps.googleusercontent.com</string>
-
+    <!-- BOOKMARK -->
+    <string name="top_bar_bookmark_title">Favoritos</string>
 </resources>
-    <!-- kotlin = "2.0.21"" -->

@@ -104,7 +104,7 @@ fun ProfileContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopNavigationBarComposable(
-                titleText = R.string.top_navigation_bar,
+                titleText = R.string.top_bar_profile_title,
                 onNavigationIconClick = navigateBack,
                 navigationIconVector = Icons.AutoMirrored.Filled.ArrowBack
             )
@@ -151,7 +151,7 @@ fun ProfileContent(
 
             Text(
                 text = profileUiState.name,
-                style = MaterialTheme.typography.headlineMedium, // Más prominente
+                style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
             Text(

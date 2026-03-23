@@ -153,6 +153,8 @@ fun NavGraphBuilder.newsGraph(newsAppState: NewsAppState, profileViewModel: Prof
     composable(LOGIN_SCREEN) {
         LoginScreen(
             modifier = Modifier,
+            loginViewModel = hiltViewModel(),
+            windowSizeClass = newsAppState.windowSizeClass,
             onSignInGuest = {
                 newsAppState.navigateAndPopUp(HOME_SCREEN, LOGIN_SCREEN)
             },

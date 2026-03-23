@@ -124,40 +124,40 @@ fun CategoryContent (
 }
 
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun CategoryPortraitLayout (
-        modifier: Modifier = Modifier,
-        mediaDto: List<MediaDto>,
-        onSourceSelected: (MediaDto) -> Unit,
-        navigateBack: () -> Unit
-    ){
-            Scaffold (
-                modifier = modifier.fillMaxSize(),
-                topBar = {
-                    TopNavigationBarComposable(
-                        modifier = modifier,
-                        titleText = R.string.top_navigation_bar,
-                        onNavigationIconClick = navigateBack,
-                        navigationIconVector = Icons.Filled.ArrowBack
-                    )
-                },
-                content = {paddingValues ->
-                    Column (
-                        modifier = Modifier
-                            .padding(paddingValues = paddingValues)
-                            .fillMaxSize()
-                    ){
-                        CategoryContent(
-                            modifier = Modifier.fillMaxSize(),
-                            mediaDto = mediaDto,
-                            onSourceSelected = onSourceSelected
-                        )
-                    }
-                },
-                bottomBar = {}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryPortraitLayout(
+    modifier: Modifier = Modifier,
+    mediaDto: List<MediaDto>,
+    onSourceSelected: (MediaDto) -> Unit,
+    navigateBack: () -> Unit
+) {
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        topBar = {
+            TopNavigationBarComposable(
+                modifier = modifier,
+                titleText = R.string.top_bar_category_title,
+                onNavigationIconClick = navigateBack,
+                navigationIconVector = Icons.Filled.ArrowBack
             )
-        }
+        },
+        content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues = paddingValues)
+                    .fillMaxSize()
+            ) {
+                CategoryContent(
+                    modifier = Modifier.fillMaxSize(),
+                    mediaDto = mediaDto,
+                    onSourceSelected = onSourceSelected
+                )
+            }
+        },
+        bottomBar = {}
+    )
+}
 
 
 
