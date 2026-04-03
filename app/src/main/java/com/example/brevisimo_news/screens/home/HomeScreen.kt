@@ -35,7 +35,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -63,7 +62,6 @@ import com.example.brevisimo_news.common.BottomNavigationBarComposable
 import com.example.brevisimo_news.common.NavigationRailComposable
 import com.example.brevisimo_news.common.SearchComposable
 import com.example.brevisimo_news.domain.model.ArticleDto
-import com.example.brevisimo_news.domain.model.BookmarkDto
 import com.example.brevisimo_news.domain.model.SourceDto
 import com.example.brevisimo_news.ui.theme.Brevisimo_NewsTheme
 
@@ -150,7 +148,14 @@ fun HomeScreen(
                 },
                 selectedDestination = newsAppState.getCurrentDestination(),
                 onSaveBookmark = homeViewModel::onSaveBookmark,
-                onDeleteBookmark = homeViewModel::deleteBookmark
+                onDeleteBookmark = homeViewModel::deleteBookmark,
+                onBookmarksIcon = {
+                    if (homeUiState.isGuestUser) {
+                        newsAppState.showSnackbar("Debes iniciar sesión con Google")
+                    } else {
+                        newsAppState.navigateToDestination(NavigationDestination.BOOKMARKS)
+                    }
+                }
             )
         }
     }
@@ -160,6 +165,7 @@ fun HomeScreen(
 @Composable
 fun HomeContent (
     modifier: Modifier = Modifier,
+    forceHorizontalLayout: Boolean = false,
     categories: List<String>,
     articleDto: List<ArticleDto>,
     homeUiState: HomeUiState,
@@ -175,7 +181,6 @@ fun HomeContent (
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-
         Spacer(modifier = Modifier.height(16.dp))
 
         SearchComposable(
@@ -187,7 +192,6 @@ fun HomeContent (
             placeholder = R.string.placeholder_search,
             icon = Icons.Filled.Search
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyRow(
@@ -202,7 +206,6 @@ fun HomeContent (
                 )
             }
         }
-
         Spacer(modifier = Modifier.height(24.dp))
 
         if (articleDto.isEmpty()) {
@@ -219,46 +222,15 @@ fun HomeContent (
                 )
             }
         } else {
-            if (homeUiState.isGridLayout) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                ){
-                    items(articleDto) { articleDto ->
-                        val isSaved = homeUiState.savedBookmarkUrl.contains(articleDto.url)
-                        GridArticleItem(
-                            modifier = Modifier.fillMaxWidth(),
-                            articleDto = articleDto,
-                            onClick = { onArticleDto(articleDto) },
-                            onGetEntity = onGetEntity,
-                            previewImage = R.drawable.imagen_para_renderizar,
-                            onSaveClick = {
-                                if (!isSaved){
-                                    onSaveBookmark(articleDto)
-                                    Toast.makeText(context, "Artículo guardado con éxito", Toast.LENGTH_SHORT).show()
-                                }else{
-                                    onDeleteBookmark(articleDto.url)
-                                    Toast.makeText(context, "Este artículo ya está en tus marcadores", Toast.LENGTH_SHORT).show()
-                                }
-                            },
-                            isSaved = isSaved
-                        )
-                    }
-                }
-            } else{
+            if (forceHorizontalLayout) {
                 LazyColumn(
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .weight(1f)
+                    modifier = Modifier.weight(1f)
                 ) {
                     items(articleDto) { articleDto ->
                         val isSaved = homeUiState.savedBookmarkUrl.contains(articleDto.url)
-                        VerticalArticleItem(
+                        HorizontalArticleItem(
                             modifier = Modifier.fillMaxWidth(),
                             articleDto = articleDto,
                             previewImage = R.drawable.imagen_para_renderizar,
@@ -276,13 +248,89 @@ fun HomeContent (
                                     onDeleteBookmark(articleDto.url)
                                     Toast.makeText(
                                         context,
-                                        "Este artículo ya está en tus marcadores",
+                                        "Artículo borrado con éxito",
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
                             },
                             isSaved = isSaved
                         )
+                    }
+                }
+            } else {
+                if (homeUiState.isGridLayout) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        items(articleDto) { articleDto ->
+                            val isSaved = homeUiState.savedBookmarkUrl.contains(articleDto.url)
+                            GridArticleItem(
+                                modifier = Modifier.fillMaxWidth(),
+                                articleDto = articleDto,
+                                onClick = { onArticleDto(articleDto) },
+                                onGetEntity = onGetEntity,
+                                previewImage = R.drawable.imagen_para_renderizar,
+                                onSaveClick = {
+                                    if (!isSaved) {
+                                        onSaveBookmark(articleDto)
+                                        Toast.makeText(
+                                            context,
+                                            "Artículo guardado con éxito",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        onDeleteBookmark(articleDto.url)
+                                        Toast.makeText(
+                                            context,
+                                            "Artículo borrado con éxito",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                },
+                                isSaved = isSaved
+                            )
+                        }
+                    }
+                } else {
+                    LazyColumn(
+                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        items(articleDto) { articleDto ->
+                            val isSaved = homeUiState.savedBookmarkUrl.contains(articleDto.url)
+                            VerticalArticleItem(
+                                modifier = Modifier.fillMaxWidth(),
+                                articleDto = articleDto,
+                                previewImage = R.drawable.imagen_para_renderizar,
+                                onClick = { onArticleDto(articleDto) },
+                                onGetEntity = onGetEntity,
+                                onSaveClick = {
+                                    if (!isSaved) {
+                                        onSaveBookmark(articleDto)
+                                        Toast.makeText(
+                                            context,
+                                            "Artículo guardado con éxito",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        onDeleteBookmark(articleDto.url)
+                                        Toast.makeText(
+                                            context,
+                                            "Artículo borrado con éxito",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                },
+                                isSaved = isSaved
+                            )
+                        }
                     }
                 }
             }
@@ -409,29 +457,33 @@ fun HomeLandscapeLayout(
     onProfileClick: () -> Unit,
     selectedDestination: NavigationDestination,
     onSaveBookmark: (ArticleDto) -> Unit,
-    onDeleteBookmark: (articleUrl: String) -> Unit
+    onDeleteBookmark: (articleUrl: String) -> Unit,
+    onBookmarksIcon: () -> Unit
 ) {
     Row(modifier = modifier.fillMaxSize()) {
         NavigationRailComposable(
             modifier = Modifier,
-            onHomeClick = onHomeClick,
-            onProfileClick = onProfileClick,
             selectedDestination = selectedDestination,
             textHome = R.string.home_navigation_bar,
             textProfile = R.string.profile_navigation_bar,
             onDrawerClick = openDrawer,
             iconHome = Icons.Default.Home,
             iconProfile = Icons.Default.AccountCircle,
-            iconMenu = Icons.Default.Menu
+            iconMenu = Icons.Default.Menu,
+            textBookmarks = R.string.bookmarks_navigation_bar,
+            onHomeNavigationIcon = onHomeClick,
+            onBookmarksNavigationIcon = onBookmarksIcon,
+            onProfileNavigationIcon = onProfileClick,
+            iconBookmarks = Icons.Filled.BookmarkBorder
         )
 
         Scaffold(
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-
         ) { paddingValues ->
             Box(modifier = Modifier.padding(paddingValues)) {
                 HomeContent(
                     modifier = Modifier.fillMaxSize(),
+                    forceHorizontalLayout = true,
                     categories = categories,
                     homeUiState = homeUiState,
                     onSearch = onSearch,
@@ -443,7 +495,6 @@ fun HomeLandscapeLayout(
                     onDeleteBookmark = onDeleteBookmark
                 )
             }
-
             if (homeUiState.isAiLoading || homeUiState.isError || homeUiState.entityDescription.isNotEmpty()) {
                 AIDialog(homeUiState = homeUiState, onDismissDialog = onDismissDialog)
             }
@@ -498,6 +549,57 @@ fun PortraitPreview() {
             selectedDestination = NavigationDestination.HOME,
             onSaveBookmark = {},
             onDeleteBookmark = {}
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "LandscapeDarkPreview"
+)
+@Preview(showBackground = true)
+@Composable
+fun LandscapePreview() {
+    val snackbarHostState = remember { SnackbarHostState()}
+    val uiState = HomeUiState(valueSearch = "")
+    val previewCategories = listOf("Business", "General", "Entertainment", "Health", "Science", "Sports", "Technology")
+
+    val articleDto = List(10){
+        ArticleDto(
+            source = SourceDto(
+                id = "",
+                name = "Bbc News"
+            ),
+            author = "Josephine Walker",
+            title = "These are the agencies Trump is purging during the shutdown - Axios",
+            description = "Thousands are being let go from agencies overseeing health care, the environment and education.",
+            url = "https://www.axios.com/2025/10/10/trump-federal-layoffs-treasury-education-health",
+            urlToImage = "https://images.axios.com/aQmahivTarO_bl7hCJ7B1Pe5BNQ=/0x73:8076x4616/1366x768/2025/10/10/1760128847374.jpg",
+            publishedAt = "2025-10-11T15:44:45Z",
+            content = "What they're saying: A spokesperson for the largest federal employee union, the American Federation of Government Employees, told Axios that the Trump administration is \\\"illegally\\\" firing thousands o… [+4094 chars]"
+        )
+    }
+
+    Brevisimo_NewsTheme{
+        HomeLandscapeLayout(
+            modifier = Modifier,
+            categories = previewCategories,
+            homeUiState = uiState,
+            onSearch = {},
+            articleDto = articleDto,
+            openDrawer = {},
+            onCategorySelected = {},
+            onArticleDto = {},
+            onGetEntity = {},
+            onDismissDialog = {},
+            snackbarHostState = snackbarHostState,
+            selectedDestination = NavigationDestination.HOME,
+            onHomeClick = {},
+            onProfileClick = {},
+            onSaveBookmark = {},
+            onDeleteBookmark = {},
+            onBookmarksIcon = {}
         )
     }
 }

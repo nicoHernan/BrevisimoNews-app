@@ -1,12 +1,15 @@
 package com.example.brevisimo_news.di
 
 
+import android.content.Context
+import com.example.brevisimo_news.R
 import com.example.brevisimo_news.data.remote.BookmarkApiService
 import com.example.brevisimo_news.data.repository.bookmark.BookmarkImpl
 import com.example.brevisimo_news.domain.repository.BookmarkRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -19,17 +22,16 @@ import javax.inject.Singleton
 object BookmarkModule {
 
     private const val BASE_URL = "https://zvagfijdyfiddrzqabsl.supabase.co/"
-    private const val SUPABASE_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2YWdmaWpkeWZpZGRyenFhYnNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxODk1OTksImV4cCI6MjA4NDc2NTU5OX0.I_pPfCc1esB5LiFYFzF6DwGaVq73UlbJvhKy3l90xQY"
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
+        val apiKey = context.getString(R.string.supabase_key)
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-                    .addHeader("apikey", SUPABASE_KEY)
-                    .addHeader("Authorization", "Bearer $SUPABASE_KEY")
+                    .addHeader("apikey", value = apiKey)
+                    .addHeader("Authorization", "Bearer $apiKey")
                     .addHeader("Content-Type", "application/json")
                     .addHeader("Prefer", "return=minimal")
                     .build()

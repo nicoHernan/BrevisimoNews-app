@@ -10,14 +10,12 @@ interface NewsApiService {
 
     @GET("v2/top-headlines")
     suspend fun getMediaInUs(
-        @Query("apiKey") apiKey: String,
         @Query("country") country: String
     ): NewsResponse
 
 
     @GET("v2/top-headlines/sources")
     suspend fun getHeadLinesByCategory(
-        @Query("category") category: String,
-        @Query("apiKey") apiKey: String
+        @Query("category") category: String
     ): MediaResponse
 }

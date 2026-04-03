@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,6 +12,9 @@ plugins {
     //SERIALIZACION
     kotlin("plugin.serialization")
 }
+
+val props = Properties()
+props.load(File(project.rootDir, "secret.properties").inputStream())
 
 android {
 
@@ -30,6 +35,16 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        resValue(
+            type = "string",
+            name = "supabase_key",
+            value = props.getProperty("supabaseKey")
+        )
+        resValue(
+            type = "string",
+            name = "news_key",
+            value = props.getProperty("newsKey")
+        )
     }
 
     buildTypes {

@@ -8,14 +8,14 @@ import com.example.brevisimo_news.domain.model.ArticleDto
 import com.example.brevisimo_news.domain.model.MediaDto
 import javax.inject.Inject
 
-private const val  API_KEY = "e68d5a60540f413a94ff0dd10face2f3"
+
 class HomeRepositoryImpl @Inject constructor(
     private val categoryDataSource: CategoryDataSource,
     private val newsApiService: NewsApiService,
     private val mediaDataSource: MediaDataSource
 ): HomeRepository {
     override suspend fun getMediaInUs(country: String): List<ArticleDto> {
-        return newsApiService.getMediaInUs(apiKey = API_KEY, country = country).articles
+        return newsApiService.getMediaInUs(country = country).articles
             ?: emptyList()
     }
 
@@ -26,7 +26,7 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCategoryContent(category: String): List<MediaDto> {
-        return newsApiService.getHeadLinesByCategory(category = category, apiKey = API_KEY).sources
+        return newsApiService.getHeadLinesByCategory(category = category).sources
             ?: emptyList()
     }
 
